@@ -14,16 +14,18 @@ if (!repo) {
   process.exit(1);
 }
 
-const result = await octokit.request("GET /repos/{owner}/{repo}/actions/caches", {
+const result = await octokit.request("GET /repos/{owner}/{repo}/actions/runs", {
   owner,
   repo,
 });
 
-for (let cache of result.data.actions_caches) {
-  await octokit.request("DELETE /repos/{owner}/{repo}/actions/caches/{cache_id}", {
+console.log(result.data.workflow_runs);
+
+for (let run of result.data.workflow_runs) {
+  await octokit.request("DELETE /repos/{owner}/{repo}/actions/runs/{run_id}", {
     owner,
     repo,
-    cache_id: cache.id,
+    run_id: run.id,
   });
-  console.log(`${cache.key} was deleted!!!`);
+  console.log(`${run.id} was deleted!!!`);
 }
